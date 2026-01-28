@@ -1,0 +1,21 @@
+spring:
+  grpc:
+    server:
+      port: 8050
+      enable-reflection: true
+  #    security:
+  #      enabled: true
+  #      certificateChain: file:certificates/server
+  #      privateKey: file:certificates/server
+  application:
+    name: customer-grpc-server
+  data:
+    mongodb:
+      uri: mongodb://dero:dero@localhost:27017/customer?authSource=admin
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  zipkin:
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans
