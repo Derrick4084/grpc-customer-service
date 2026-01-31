@@ -3,14 +3,14 @@ package com.derocode.customer_grpc_server.service;
 
 import com.derocode.customer.*;
 import com.derocode.customer_grpc_server.configs.ServerInterceptorConfig;
-import com.derocode.customer_grpc_server.model.Address;
+import com.derocode.customer_grpc_server.mapper.LombokMapperImpl;
 import com.derocode.customer_grpc_server.model.Customer;
 import com.derocode.customer_grpc_server.repository.CustomerMongoRepository;
 import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.grpc.server.service.GrpcService;
 
-import java.math.BigInteger;
+import java.util.List;
 import java.util.Optional;
 
 @GrpcService(interceptors = ServerInterceptorConfig.class)
@@ -18,6 +18,7 @@ import java.util.Optional;
 public class CustomerServiceImpl extends CustomerServiceGrpc.CustomerServiceImplBase {
 
     private final CustomerMongoRepository customerMongoRepository;
+    private final LombokMapperImpl lombokMapper;
 
     @Override
     public void getCustomerById(CustomerRequest request, StreamObserver<CustomerResponse> responseObserver) {
@@ -26,17 +27,7 @@ public class CustomerServiceImpl extends CustomerServiceGrpc.CustomerServiceImpl
 
         if (customerEntity.isPresent()){
             Customer customer = customerEntity.get();
-
-            CustomerResponse customerResponse = CustomerResponse.newBuilder()
-                    .setFirstName(customer.getFirstName())
-                    .setLastName(customer.getLastName())
-                    .setEmail(customer.getEmail())
-                    .setAddress(CustomerAddress.newBuilder()
-                            .setHouseNumber(customer.getAddress().getHouseNumber())
-                            .setStreet(customer.getAddress().getStreet())
-                            .setZipCode(customer.getAddress().getZipCode())
-                            .build())
-                    .build();
+            CustomerResponse customerResponse = lombokMapper.toResponse(customer);
             responseObserver.onNext(customerResponse);
             responseObserver.onCompleted();
         }
@@ -44,27 +35,32 @@ public class CustomerServiceImpl extends CustomerServiceGrpc.CustomerServiceImpl
     }
 
     @Override
-    public void addCustomer(AddCustomerRequest request, StreamObserver<AddCustomerResponse> responseObserver) {
+    public void addCustomer(AddCustomerRequest request, StreamObserver<CustomerResponse> responseObserver) {
 
-        Address custAddress = new Address();
-        custAddress.setHouseNumber(request.getAddress().getHouseNumber());
-        custAddress.setStreet(request.getAddress().getStreet());
-        custAddress.setZipCode(request.getAddress().getZipCode());
-
-        Customer customer = Customer.builder()
-                .firstName(request.getFirstName())
-                .lastName(request.getLastName())
-                .email(request.getEmail())
-                .address(custAddress)
-                .build();
+        Customer customer = lombokMapper.toEntity(request);
 
         Customer savedCustomer = customerMongoRepository.save(customer);
 
-        AddCustomerResponse addCustomerResponse = AddCustomerResponse.newBuilder()
-                .setId(savedCustomer.getId())
-                .build();
+        CustomerResponse response = lombokMapper.toResponse(savedCustomer);
 
-        responseObserver.onNext(addCustomerResponse);
+        responseObserver.onNext(response);
         responseObserver.onCompleted();
+    }
+
+    @Override
+    public void getAllCustomers(Empty request, StreamObserver<CustomerResponseList> responseObserver) {
+        List<CustomerResponse> customers = customerMongoRepository.findAll().stream().map(lombokMapper::toResponse).toList();
+
+        CustomerResponseList.Builder responseList = CustomerResponseList.newBuilder();
+
+        while (customers.iterator().hasNext()) {
+            CustomerResponse response = customers.getFirst();
+            responseList.addCustomerResponse(response);
+        }
+
+        responseObserver.onNext(responseList.build());
+        responseObserver.onCompleted();
+
+
     }
 }
