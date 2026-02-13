@@ -9,6 +9,13 @@ RUN mvn clean package -DskipTests
 # Runtime
 FROM amazoncorretto:21-alpine
 
+RUN apk --no-cache add curl
+
+#USER root
+#COPY certificates.sh /certificates.sh
+#RUN chmod +x /certificates.sh
+#RUN /certificates.sh
+
 # ARG PROFILE=dev
 ARG APP_VERSION=0.0.1
 

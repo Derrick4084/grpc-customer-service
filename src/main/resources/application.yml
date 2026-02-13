@@ -1,21 +1,35 @@
 spring:
+  config:
+    import: "aws-secretsmanager:"
+  cloud:
+    aws:
+      region:
+        static: us-east-1            # or your region
+      credentials:
+        use-default-aws-credentials-chain: true
   grpc:
     server:
-      port: 8050
+      port: 9090
       enable-reflection: true
   #    security:
   #      enabled: true
   #      certificateChain: file:certificates/server
   #      privateKey: file:certificates/server
   application:
-    name: customer-grpc-server
+    name: grpc-customer-service
   data:
     mongodb:
-      uri: mongodb://dero:dero@localhost:27017/customer?authSource=admin
+      uri: mongodb://${DOCUMENT_DB_USERNAME}:${DOCUMENT_DB_PASSWORD}@${CUSTOMER_DB_ENDPOINT}:${DOC_DB_PORT}/customer?authSource=admin
 management:
   tracing:
     sampling:
       probability: 1.0
-  zipkin:
-    tracing:
-      endpoint: http://localhost:9411/api/v2/spans
+#  zipkin:
+#    tracing:
+#      endpoint: http://localhost:9411/api/v2/spans
+
+#java:
+#  net:
+#    ssl:
+#      trustStore: /tmp/certs/rds-truststore.jks
+#      trustStorePassword: 123456
