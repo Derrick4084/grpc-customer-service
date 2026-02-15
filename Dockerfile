@@ -9,12 +9,12 @@ RUN mvn clean package -DskipTests
 # Runtime
 FROM amazoncorretto:21-alpine
 
-RUN apk --no-cache add curl
+# Install curl and CA certs
+RUN apk --no-cache add curl ca-certificates
 
-#USER root
-#COPY certificates.sh /certificates.sh
-#RUN chmod +x /certificates.sh
-#RUN /certificates.sh
+# Download AWS RDS / DocumentDB CA bundle
+RUN mkdir -p /app/certs && \
+    curl -o /app/certs/rds-combined-ca-bundle.pem https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem
 
 # ARG PROFILE=dev
 ARG APP_VERSION=0.0.1

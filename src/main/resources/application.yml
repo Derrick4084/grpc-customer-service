@@ -1,6 +1,4 @@
 spring:
-  config:
-    import: "aws-secretsmanager:"
   cloud:
     aws:
       region:
@@ -18,12 +16,20 @@ spring:
   application:
     name: grpc-customer-service
   data:
-    mongodb:
-      uri: mongodb://${DOCUMENT_DB_USERNAME}:${DOCUMENT_DB_PASSWORD}@${CUSTOMER_DB_ENDPOINT}:${DOC_DB_PORT}/customer?authSource=admin
-management:
-  tracing:
-    sampling:
-      probability: 1.0
+    mongo:
+      uri: mongodb://${DOCUMENT_DB_USERNAME}:${DOCUMENT_DB_PASSWORD}@${CUSTOMER_DB_ENDPOINT}:${DOC_DB_PORT}/customers?ssl=true&sslCAFile=/app/certs/rds-combined-ca-bundle.pem&replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false
+      username: ${DOCUMENT_DB_USERNAME}
+      secret: ${DOCUMENT_DB_SECRET_NAME}
+      host: ${CUSTOMER_DB_ENDPOINT}
+      port: ${DOCUMENT_DB_PORT}
+
+
+
+
+#management:
+#  tracing:
+#    sampling:
+#      probability: 1.0
 #  zipkin:
 #    tracing:
 #      endpoint: http://localhost:9411/api/v2/spans

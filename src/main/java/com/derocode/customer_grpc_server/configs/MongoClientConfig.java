@@ -30,15 +30,23 @@ import java.util.List;
 @Configuration
 public class MongoClientConfig {
 
-    @Value("${DOCUMENT_DB_PASSWORD}")
+    @Value("${spring.data.mongo.secret")
     private String docDbSecret;
+
+    @Value("${spring.data.mongo.username}")
+    private String docDbUserName;
+
+    @Value("${spring.data.mongo.host}")
+    private String docDbHost;
+
+    @Value("${spring.data.mongo.port}")
+    private int docDbPort;
 
     @Bean
     public MongoClient mongoClient() {
 
-
         MongoCredential credential = MongoCredential.createScramSha256Credential(
-                System.getenv("DOCUMENT_DB_USERNAME"),
+                docDbUserName,
                 "admin",
                 docDbSecret.toCharArray()
         );
@@ -46,8 +54,8 @@ public class MongoClientConfig {
                 MongoClientSettings.builder()
                         .applyToClusterSettings(builder ->
                                 builder.hosts(List.of(
-                                        new ServerAddress(System.getenv("CUSTOMER_DB_ENDPOINT"),
-                                        Integer.parseInt(System.getenv("DOC_DB_PORT")))))
+                                        new ServerAddress(docDbHost,
+                                        docDbPort)))
                         )
                         .credential(credential)
                         .build()
@@ -57,7 +65,7 @@ public class MongoClientConfig {
 
     @Bean
     public MongoDatabaseFactory mongoDatabaseFactory(MongoClient mongoClient) {
-        return new SimpleMongoClientDatabaseFactory(mongoClient,"customer");
+        return new SimpleMongoClientDatabaseFactory(mongoClient,"customers");
     }
 
     @Bean
