@@ -12,5 +12,6 @@ build-image:
   script:
     - docker build -t $CI_REGISTRY_IMAGE:$IMAGE_TAG .
     - docker push $CI_REGISTRY_IMAGE:$IMAGE_TAG
+    - docker push $CI_REGISTRY_IMAGE:latest
   only:
     - main
