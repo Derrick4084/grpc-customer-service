@@ -22,7 +22,7 @@ ARG APP_VERSION=0.0.1
 WORKDIR /app
 COPY --from=build /build/target/customer-grpc-server-*.jar /app/app.jar
 
-EXPOSE 8050
+EXPOSE 9090
 
 # ENV ACTIVE_PROFILE=${PROFILE}
 
