@@ -1,6 +1,6 @@
 spring:
   config:
-    import: aws-secretsmanager:${DOCUMENT_DB_SECRET_ARN}?prefix=mongo.
+    import: aws-secretsmanager:${DOCUMENT_DB_SECRET_NAME}?prefix=mongo.
   cloud:
     aws:
       region:
