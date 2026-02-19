@@ -30,16 +30,16 @@ import java.util.List;
 @Configuration
 public class MongoClientConfig {
 
-    @Value("${mongo.password}")
+    @Value("${password}")
     private String docDbSecret;
 
-    @Value("${mongo.username}")
+    @Value("${username}")
     private String docDbUserName;
 
-    @Value("${spring.data.mongo.host}")
+    @Value("${spring.data.mongodb.host}")
     private String docDbHost;
 
-    @Value("${mongo.port}")
+    @Value("${port}")
     private int docDbPort;
 
     @Bean
