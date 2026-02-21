@@ -79,11 +79,6 @@ public class MongoClientConfig {
         SSLContext sslContext = SSLContext.getInstance("TLS");
         sslContext.init(null, tmf.getTrustManagers(), null);
 
-//        SslSettings sslSettings = SslSettings.builder()
-//                .enabled(true)
-//                .invalidHostNameAllowed(true) // Required for DocumentDB
-//                .build();
-
         MongoClientSettings mongoClientSettings = MongoClientSettings.builder()
                 .applyToClusterSettings(builder ->
                         builder.hosts(List.of(
