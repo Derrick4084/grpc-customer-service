@@ -1,22 +1,10 @@
 package com.derocode.customer_grpc_server.configs;
 
-import com.mongodb.DBRef;
-
 import com.mongodb.MongoClientSettings;
-import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-
 import com.mongodb.ServerAddress;
-
 import com.mongodb.MongoCredential;
 import com.mongodb.client.MongoClients;
-
-import com.mongodb.connection.SslSettings;
-import org.bson.Document;
-import org.jspecify.annotations.Nullable;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,14 +12,11 @@ import org.springframework.data.mongodb.MongoDatabaseFactory;
 import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
 import org.springframework.data.mongodb.core.convert.*;
 import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
-import org.springframework.data.mongodb.core.mapping.MongoPersistentProperty;
-
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.security.KeyStore;
-import java.security.KeyStoreException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
 import java.util.Collection;
