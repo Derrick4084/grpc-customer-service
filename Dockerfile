@@ -10,7 +10,7 @@ RUN mvn clean package -DskipTests
 FROM amazoncorretto:21-alpine
 
 # Install curl and CA certs
-RUN apk --no-cache add curl wget ca-certificates
+RUN apk --no-cache add curl wget netcat-openbsd ca-certificates
 
 
 RUN GRPC_HEALTH_PROBE_VERSION=v0.4.24 && \
