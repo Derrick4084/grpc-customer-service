@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 public class MongoClientConfig {
 
     @Value("${password}")
-    private String docDbSecret;
+    private String docDbPassword;
 
     @Value("${username}")
     private String docDbUserName;
@@ -41,10 +41,10 @@ public class MongoClientConfig {
     @Bean
     public MongoClient mongoClient() throws Exception {
 
-        MongoCredential credential = MongoCredential.createScramSha256Credential(
+        MongoCredential credential = MongoCredential.createScramSha1Credential(
                 docDbUserName,
                 "admin",
-                docDbSecret.toCharArray()
+                docDbPassword.toCharArray()
         );
 
         KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
