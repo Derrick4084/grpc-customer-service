@@ -4,6 +4,8 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
 @Document(collection = "customers")
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,5 +18,5 @@ public class Customer {
     private String firstName;
     private String lastName;
     private String email;
-    private Address address;
+    private List<Address> addresses;
 }

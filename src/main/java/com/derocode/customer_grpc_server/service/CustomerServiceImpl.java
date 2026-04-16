@@ -36,7 +36,7 @@ public class CustomerServiceImpl extends CustomerServiceGrpc.CustomerServiceImpl
 
     @Override
     public void addCustomer(AddCustomerRequest request, StreamObserver<CustomerResponse> responseObserver) {
-        Customer customer = lombokMapper.toEntity(request);
+        Customer customer = lombokMapper.toCustomer(request);
         Customer savedCustomer = customerMongoRepository.save(customer);
         CustomerResponse response = lombokMapper.toResponse(savedCustomer);
         responseObserver.onNext(response);
