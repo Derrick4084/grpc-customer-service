@@ -5,6 +5,7 @@ import com.derocode.customer_grpc_server.model.Address;
 import com.derocode.customer.CustomerResponse;
 import com.derocode.customer.CustomerResponseAddress;
 import com.derocode.customer_grpc_server.model.Customer;
+import org.jspecify.annotations.NonNull;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
@@ -15,7 +16,7 @@ import java.util.List;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface LombokMapper {
 
-    default Customer toCustomer(AddCustomerRequest request) {
+    default Customer toCustomer(@NonNull AddCustomerRequest request) {
         Customer customer = new Customer();
         customer.setFirstName(request.getFirstName());
         customer.setLastName(request.getLastName());
@@ -33,7 +34,7 @@ public interface LombokMapper {
         return customer;
     }
 
-    default CustomerResponse toResponse(Customer customer) {
+    default CustomerResponse toResponse(@NonNull Customer customer) {
         CustomerResponse.Builder builder = CustomerResponse.newBuilder()
                 .setId(customer.getId())
                 .setFirstName(customer.getFirstName())
@@ -53,37 +54,4 @@ public interface LombokMapper {
         builder.addAllAddresses(addresses);
         return builder.build();
     }
-
-//    @Mapping(target = "id", ignore = true)
-//    @Mapping(target = "address.street", source = "street")
-//    @Mapping(target = "address.houseNumber", source = "houseNumber")
-//    @Mapping(target = "address", source = "addressList")
-//    Customer toEntity(AddCustomerRequest request);
-
-
-//    @Mapping(target = "street", source = "address.street")
-//    @Mapping(target = "houseNumber", source = "address.houseNumber")
-//    @Mapping(target = "zipCode", source = "address.zipCode")
-//    default CustomerResponse toResponse(Customer customer) {
-//
-//        CustomerResponse.Builder builder = CustomerResponse.newBuilder()
-//                .setId(customer.getId())
-//                .setFirstName(customer.getFirstName())
-//                .setLastName(customer.getLastName())
-//                .setEmail(customer.getEmail());
-//        List<Address> addresses = customer.getAddresses()
-//                .stream().map(address -> Address
-//                        .newBuilder()
-//                        .setHouseNumber(address.getHouseNumber())
-//                        .setStreet(address.getStreet())
-//                        .setCity(address.getCity())
-//                        .setState(address.getState())
-//                        .setZipCode(address.getZipCode().toString())
-//                        .build()
-//                )
-//                .toList();
-//        builder.addAllAddresses(addresses);
-//        return builder.build();
-//
-//    }
 }

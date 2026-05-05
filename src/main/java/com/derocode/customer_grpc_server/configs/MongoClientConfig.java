@@ -1,16 +1,21 @@
 package com.derocode.customer_grpc_server.configs;
 
+import com.derocode.customer_grpc_server.model.Customer;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.ServerAddress;
 import com.mongodb.MongoCredential;
 import com.mongodb.client.MongoClients;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.MongoDatabaseFactory;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
 import org.springframework.data.mongodb.core.convert.*;
+import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
@@ -99,6 +104,17 @@ public class MongoClientConfig {
         mappingMongoConverter.setTypeMapper(new DefaultMongoTypeMapper(null));
         return mappingMongoConverter;
 
+    }
+
+    @Bean
+    public ApplicationRunner initIndexes(MongoTemplate mongoTemplate) {
+        return args -> {
+            mongoTemplate.indexOps(Customer.class).createIndex(
+                    new Index()
+                            .on("email", Sort.Direction.ASC)
+                            .unique()
+            );
+        };
     }
 
 
