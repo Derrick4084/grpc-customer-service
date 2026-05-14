@@ -11,13 +11,10 @@ import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.grpc.server.service.GrpcService;
-
 import static org.springframework.data.mongodb.core.FindAndModifyOptions.options;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
@@ -27,16 +24,13 @@ import java.util.Objects;
 import java.util.Optional;
 
 @GrpcService(interceptors = ServerInterceptorConfig.class)
+@RequiredArgsConstructor
 public class CustomerServiceImpl extends CustomerServiceGrpc.CustomerServiceImplBase {
 
-    @Autowired
-    private LombokMapperImpl lombokMapper;
 
-    @Autowired
-    private MongoOperations mongoOperations;
-
-    @Autowired
-    private CustomerMongoRepository customerMongoRepository;
+    private final LombokMapperImpl lombokMapper;
+    private final MongoOperations mongoOperations;
+    private final CustomerMongoRepository customerMongoRepository;
 
     public long generateSequence(String seqName) {
         DatabaseSequence counter = mongoOperations.findAndModify(query(where("_id").is(seqName)),
@@ -93,7 +87,7 @@ public class CustomerServiceImpl extends CustomerServiceGrpc.CustomerServiceImpl
             responseObserver.onNext(response);
             responseObserver.onCompleted();
         }
-        catch(DataIntegrityViolationException e){
+        catch(IllegalArgumentException | OptimisticLockingFailureException e){
             responseObserver.onError(
                     Status.ALREADY_EXISTS
                             .withDescription("Customer with " + request.getEmail() + " already exists")
