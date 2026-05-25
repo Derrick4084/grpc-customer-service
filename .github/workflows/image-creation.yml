@@ -18,6 +18,10 @@ jobs:
       packages: write
 
     steps:
+      - name: Node Setup
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
       - name: Checkout Repository
         uses: actions/checkout@v4
 
